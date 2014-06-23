@@ -1,0 +1,57 @@
+<?php
+/**
+ * @file
+ * Code for the Itchefer Resend newsletter feature.
+ */
+
+include_once 'itchefer_resend_newsletter.features.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function itchefer_resend_newsletter_menu() {
+  $items = array();
+  $items['node/%node/resend'] = array(
+    'title' => 'Newsletter resend',
+    'type' => MENU_LOCAL_TASK,
+    'page callback' => 'itchefer_resend_newsletter_form',
+    'access arguments' => array('administer site configuration'),
+    'page arguments' => array(1),
+  );
+  return $items;
+}
+/**
+ * Implements hook_admin_paths().
+ */
+function itchefer_resend_newsletter_admin_paths() {
+  $paths = array(
+    'node/*/resend' => TRUE,
+  );
+  return $paths;
+}
+
+
+/**
+ * Menu callback; Newsletter tab page.
+ */
+function itchefer_resend_newsletter_form($node) {
+  drupal_set_title(t('<em>Newsletter</em> @title', array('@title' => $node->title)), PASS_THROUGH);
+  if (!empty($node->simplenews)) {
+    $simplenews_values = $node->simplenews;
+  }
+  // If not, try to load it based on the node id.
+  elseif ($loaded = simplenews_newsletter_load($node->nid)) {
+    $simplenews_values = $loaded;
+  }
+  // If that fails too, fall back to the defaults.
+  else {
+    $simplenews_values = (object) _simplenews_get_node_form_defaults($node);
+  }
+  // set the status to not sendt yet. And send agagin in simplenews
+  // See simplenews_node_tab_send_form()
+  $simplenews_values->status = SIMPLENEWS_STATUS_SEND_NOT;
+  module_load_include('inc','simplenews','includes/simplenews.admin');
+  $node->simplenews = $simplenews_values;
+  if (module_exists('simplenews'))
+  return drupal_get_form('simplenews_node_tab_send_form', $node);
+}
