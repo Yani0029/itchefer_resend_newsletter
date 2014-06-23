@@ -80,6 +80,13 @@ function itchefer_resend_newsletter_views_default_views() {
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  /* Felt: Indhold: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
   /* Felt: Indhold: Newsletter category */
   $handler->display->display_options['fields']['field_simplenews_term']['id'] = 'field_simplenews_term';
   $handler->display->display_options['fields']['field_simplenews_term']['table'] = 'field_data_field_simplenews_term';
@@ -104,7 +111,8 @@ function itchefer_resend_newsletter_views_default_views() {
   $handler->display->display_options['fields']['send']['table'] = 'simplenews_newsletter';
   $handler->display->display_options['fields']['send']['field'] = 'send';
   $handler->display->display_options['fields']['send']['label'] = 'HANDLINGER';
-  $handler->display->display_options['fields']['send']['empty'] = '<a href="">Send igen!</a>';
+  $handler->display->display_options['fields']['send']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['send']['empty'] = '<a href="/node/[nid]/resend">Send igen!</a>';
   $handler->display->display_options['fields']['send']['text'] = 'Send!';
   /* Sorteringskriterie: Indhold: Oprettelsesdato */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
@@ -161,7 +169,7 @@ function itchefer_resend_newsletter_views_default_views() {
     t('.'),
     t(','),
     t('HANDLINGER'),
-    t('<a href="">Send igen!</a>'),
+    t('<a href="/node/[nid]/resend">Send igen!</a>'),
     t('Send!'),
     t('Page'),
   );
